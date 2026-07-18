@@ -1,0 +1,2 @@
+var desc = fd_data.trigger.current.short_description;
+return desc ? desc.toLowerCase() : '';
