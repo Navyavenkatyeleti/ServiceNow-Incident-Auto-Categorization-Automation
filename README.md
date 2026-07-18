@@ -17,3 +17,8 @@ Instead of relying on custom or non-standard tools, I stuck to core ServiceNow u
 2.  Use a "Set Flow Variables" action at the start to run the normalization script.
 3.  Set up your "If" conditions to evaluate that normalized variable.
 4.  Map the results to "Update Record" actions to automate the categorization.
+
+## Demo
+- Screenshots of the project are added in screenshots folder
+- Script used in the project is provided in the script file
+- Please find the youtube video link for demo video - https://youtu.be/pyV7x2Tk8Bg
