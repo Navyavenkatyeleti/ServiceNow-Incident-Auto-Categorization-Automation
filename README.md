@@ -1,47 +1,19 @@
-# ServiceNow Incident Auto-Categorization Automation
+# Incident Auto-Categorization Flow
 
-## Overview
-This project streamlines ITSM operations by automating incident classification using **ServiceNow Flow Designer**. It eliminates manual triage, reduces human error, and improves incident routing accuracy in a ServiceNow instance.
+## What this project is about
+I built this automation to help solve a common frustration in ServiceNow: inconsistent incident data. Often, users submit tickets with varying case styles (e.g., "PASSWORD reset", "password issue", "Password request"), which makes it difficult for automated workflows to trigger correctly. This project uses a clean, efficient script to normalize that data so the system can categorize and assign incidents automatically, no matter how the user types their request.
 
-## Business Challenge
-Before this automation, incident categorization was a manual process, leading to:
-* **Inconsistent categorization** across the IT team.
-* **Delayed resolution** due to incorrect initial assignment.
-* **Administrative overhead** for Service Desk managers.
+## How I built it
+I wanted to avoid "brute-force" methods like listing every possible case variation. Instead, I focused on a more professional, scalable approach:
+*   **Data Normalization**: I used a script at the very start of the flow to convert the `short_description` into a lowercase string.
+*   **Defensive Logic**: I added a check to handle empty descriptions, ensuring the flow won't break if a user submits a ticket without a subject.
+*   **Clean Conditionals**: By normalizing the data first, the rest of the flow uses simple, readable "If" logic to map keywords like "password" or "email" to the correct category and assignment group.
 
-## Technical Implementation
-* **Platform**: ServiceNow PDI (Australian Release).
-* **Tools**: Flow Designer, Table Administration, and JavaScript.
-* **Logic**: Implemented case-insensitive keyword matching using `.toLowerCase()` to ensure robust classification regardless of user input format[cite: 1].
+## Why I took this approach
+Instead of relying on custom or non-standard tools, I stuck to core ServiceNow utilities. This makes the flow much easier to maintain, faster to run, and—most importantly—easy for other developers to understand. It demonstrates that I know how to write efficient code that keeps the platform clean and performant.
 
-## Key Features
-1. **Automated Categorization**: Automatically sets `Category` and `Assignment Group` based on incident keywords (e.g., 'password', 'email', 'laptop', 'VPN')[cite: 1].
-2. **Case-Insensitive Processing**: Utilizes server-side scripting to normalize the `short_description` input, ensuring 100% keyword capture regardless of character case[cite: 1].
-3. **Optimized Performance**: Built using Flow Designer triggers to ensure minimal database overhead during incident creation[cite: 1].
-
-## JavaScript Logic (Case-Insensitive)
-Below is the core script logic implemented to handle case-insensitive keyword matching:
-
-```javascript
-/**
- * Script Logic for Incident Auto-Categorization
- * Used in Flow Designer to handle case-insensitive keyword matching.
- */
-
-var desc = fd_data.trigger.current.short_description.toString().toLowerCase();
-
-// Define keywords and their respective categories
-var keywords = {
-    'password': 'Access',
-    'email': 'Software',
-    'laptop': 'Hardware',
-    'vpn': 'Network'
-};
-
-// Check if description contains any of the keywords
-for (var key in keywords) {
-    if (desc.includes(key)) {
-        return true; 
-    }
-}
-return false;
+## How to use it
+1.  In Flow Designer, create a new flow triggered by `Incident [incident]` creation or updates.
+2.  Use a "Set Flow Variables" action at the start to run the normalization script.
+3.  Set up your "If" conditions to evaluate that normalized variable.
+4.  Map the results to "Update Record" actions to automate the categorization.
